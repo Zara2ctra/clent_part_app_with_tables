@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const $host = axios.create({
-    baseURL: "https://server-part-app-with-tables-8nbddhiho-zara2ctra.vercel.app:5000",
+    baseURL: "https://server-part-app-with-tables.onrender.com",
 })
 
 
 
 const $authHost = axios.create({
-    baseURL: "https://server-part-app-with-tables-8nbddhiho-zara2ctra.vercel.app:5000",
+    baseURL: "https://server-part-app-with-tables.onrender.com",
 })
 
 const authInterceptor = (config) => {
