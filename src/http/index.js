@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const $host = axios.create({
-    baseURL: "https://server-part-app-with-tables.onrender.com",
+    baseURL: "https://server-part-app-with-tables.onrender.com"
 })
 
 

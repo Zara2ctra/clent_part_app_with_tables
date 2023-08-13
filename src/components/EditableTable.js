@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Table} from "react-bootstrap";
 import {Lock, Trash, Unlock} from "react-bootstrap-icons";
 import {observer} from "mobx-react-lite";
 import {blockAll, changeUserStatus, removeAll, removeRow} from "../http/userAPI";
+import {Context} from "../index";
 
 const EditableTable = observer(({columns, rows, actions}) => {
+    const {user} = useContext(Context);
     const [rowsState, setRowsState] = useState(rows);
     const [statusState, setStatusState] = useState(rows);
 
@@ -16,12 +18,18 @@ const EditableTable = observer(({columns, rows, actions}) => {
         setStatusState(rows);
     }, [rows]);
 
+    const logOut = () => {
+        user.setUser({});
+        user.setIsAuth(false);
+    }
+
     const handleRemoveRow = async (rowID) => {
         await removeRow(rowID);
         const newData = rowsState.filter(row => {
             return row.id !== rowID ? row : null
         });
         setRowsState(newData);
+        if (user.id === rowID) logOut();
     }
 
     const handleRemoveAll = async () => {
@@ -30,9 +38,11 @@ const EditableTable = observer(({columns, rows, actions}) => {
             return null
         });
         setRowsState(newData);
+        logOut();
     }
 
     const handleChangeUserStatus = async (rowID) => {
+        console.log(rowID);
         const updatedRows = rowsState.map(row => {
             if (row.id === rowID) {
                 return {
@@ -49,6 +59,13 @@ const EditableTable = observer(({columns, rows, actions}) => {
         });
         setStatusState(newData);
         await changeUserStatus(rowID);
+        if (user.id === rowID) {
+            for (let key of rows) {
+                if (key.id === user.id && key.status === "Active") {
+                    logOut();
+                }
+            }
+        }
     }
 
     const handleBlockAll = async () => {
@@ -63,6 +80,7 @@ const EditableTable = observer(({columns, rows, actions}) => {
             return "Block";
         });
         setStatusState(newData);
+        logOut();
         await blockAll();
     }
 

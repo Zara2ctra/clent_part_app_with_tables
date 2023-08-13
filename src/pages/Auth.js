@@ -22,6 +22,7 @@ const Auth = () => {
             } else {
                 data = await registration(email, password, name)
             }
+            user.setId(data?.id);
             user.setUser(user);
             user.setIsAuth(true);
             navigate(MAIN_ROUTE);

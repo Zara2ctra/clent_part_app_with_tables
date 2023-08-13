@@ -21,22 +21,28 @@ const UsersTable = observer(() => {
         return new Date(dateString).toLocaleDateString('en-US', options).replace('at', '').trim();
     }
 
-    useEffect(() => {
-        const fetchAll = async () => {
-            try {
-                const {data} = await $authHost.get('api/user/');
-                data.map(row => {
-                    row.registration_date = formatDateString(row.registration_date);
-                    row.last_login_date = formatDateString(row.last_login_date);
-                })
-                setRows(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    const fetchAll = async () => {
+        try {
+            const {data} = await $authHost.get('api/user/');
+            data.map(row => {
+                row.registration_date = formatDateString(row.registration_date);
+                row.last_login_date = formatDateString(row.last_login_date);
+            })
+            setRows(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
+    useEffect(() => {
         fetchAll().then(r => r);
     }, []);
+
+    useEffect(() => {
+        if (user.isAuth) {
+            fetchAll().then(r => r);
+        }
+    }, [user.isAuth]);
 
     const columns = [
         {field: 'id', fieldName: '#'},
